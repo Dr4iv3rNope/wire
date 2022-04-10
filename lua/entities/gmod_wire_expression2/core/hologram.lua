@@ -146,6 +146,10 @@ for _,v in pairs( ModelList ) do
 	end
 end
 
+local ModelBlacklist = {
+	["models/dog.mdl"] = true
+}
+
 local function GetModel(self, model, skin)
 	skin = skin or 0
 
@@ -165,6 +169,10 @@ local function GetModel(self, model, skin)
 
 		-- The model was valid however the skin was not. Go to default skin
 		skin = 0
+	end
+
+	if ModelBlacklist[model] then
+		return false
 	end
 
 	return model, skin
