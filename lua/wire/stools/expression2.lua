@@ -179,15 +179,17 @@ if SERVER then
 		local player = self:GetOwner()
 
 		if IsValid(chip) and chip:GetClass() == "gmod_wire_expression2" then
+			local bypass = CheckBypass(player)
+
 			if chip.player == player then -- Just download if the toolgun user owns this chip
 				self:Download(player, chip)
 				player:SetAnimation(PLAYER_ATTACK1)
 			elseif (chip.alwaysAllow and chip.alwaysAllow[player]) or not IsValid(chip.player) then -- If the tooling player is in the chip's always allow table, or the chip has no valid owner meaning we can't send a request, do a CanTool check
-				if hook.Run("CanTool", player, WireLib.dummytrace(chip), "wire_expression2") then
+				if bypass and hook.Run("CanTool", player, WireLib.dummytrace(chip), "wire_expression2") then
 					self:Download(player, chip)
 					player:SetAnimation(PLAYER_ATTACK1)
 				end
-			elseif CheckBypass(player) then
+			elseif bypass then
 				if hook.Run("CanTool", player, WireLib.dummytrace(chip), "wire_expression2") then
 					-- Warn the chip's owner their E2 was just taken via the bypass
 					if bypassModeCVar:GetInt() == 3 then
